@@ -46,3 +46,24 @@ export async function* streamAsk(question, mode, signal) {
     }
   }
 }
+
+export async function listDocs() {
+  const r = await fetch("/api/documents");
+  if (!r.ok) throw new Error("Could not load documents");
+  return r.json();
+}
+
+export async function uploadDocs(files, category) {
+  const fd = new FormData();
+  fd.append("category", category);
+  files.forEach((f) => fd.append("files", f));
+  const r = await fetch("/api/documents/upload", { method: "POST", body: fd });
+  if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || `Upload failed (${r.status})`);
+  return r.json();
+}
+
+export async function deleteDoc(category, name) {
+  const r = await fetch(`/api/documents/${encodeURIComponent(category)}/${encodeURIComponent(name)}`, { method: "DELETE" });
+  if (!r.ok) throw new Error("Delete failed");
+  return r.json();
+}

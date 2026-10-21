@@ -2,7 +2,7 @@ import { ShieldCheck, TerminalSquare } from "lucide-react";
 import { MODES } from "../modes.js";
 
 export default function Sidebar({ active, onSelect, health }) {
-  const groups = ["Assistants", "Tools"];
+  const groups = ["Assistants", "Tools", "Knowledge"];
   const model = health?.models?.find((m) => !m.startsWith("nomic"));
 
   return (

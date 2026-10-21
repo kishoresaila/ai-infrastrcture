@@ -11,6 +11,30 @@ COLLECTION = os.getenv("COLLECTION", "infra_docs")
 DOCS_DIR = Path(os.getenv("DOCS_DIR", "documents"))
 EMBED_DIM = 768  # nomic-embed-text output size
 
+CATEGORIES = ["linux", "docker", "kubernetes", "storage", "devops"]
+ALLOWED_EXT = {".md", ".txt", ".pdf", ".docx"}
+MAX_UPLOAD_MB = 20
+
+
+def extract_text(path: Path) -> str:
+    """Read plain text out of .md/.txt/.pdf/.docx files."""
+    ext = path.suffix.lower()
+    if ext in (".md", ".txt"):
+        return path.read_text(encoding="utf-8", errors="ignore")
+    if ext == ".pdf":
+        from pypdf import PdfReader
+        reader = PdfReader(str(path))
+        return "\n\n".join((page.extract_text() or "").strip() for page in reader.pages)
+    if ext == ".docx":
+        import docx
+        d = docx.Document(str(path))
+        parts = [p.text for p in d.paragraphs if p.text.strip()]
+        for table in d.tables:
+            for row in table.rows:
+                parts.append(" | ".join(c.text.strip() for c in row.cells))
+        return "\n\n".join(parts)
+    raise ValueError(f"Unsupported file type: {ext}")
+
 
 def chunk_text(text: str, size: int = 800, overlap: int = 120) -> list[str]:
     """Split text into overlapping chunks, preferring paragraph boundaries."""

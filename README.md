@@ -1,7 +1,7 @@
 # AI-Powered Infrastructure Assistant (v2.0)
 
 RAG-based assistant for troubleshooting Linux, Docker, Kubernetes and Storage.
-Stack: FastAPI · Ollama (Qwen3 + nomic-embed-text) · Qdrant · Streamlit · Docker Compose.
+Stack: FastAPI · Ollama (Qwen3 + nomic-embed-text) · Qdrant · React (Vite) + nginx · Docker Compose.
 
 ```
 User -> Streamlit UI -> FastAPI -> Qdrant (retrieve top-k chunks)
@@ -45,8 +45,11 @@ curl -X POST http://localhost:8000/ingest
 ```
 (or click **Re-index documents** in the UI sidebar). Re-running is safe: chunk IDs are deterministic, so it updates instead of duplicating.
 
+**Easier: upload from the UI.** Open the **Documents** page (sidebar > Knowledge), pick a category, drag & drop `.md`, `.txt`, `.pdf` or `.docx` files and click *Upload & index*. Files are saved into `documents/<category>/` and indexed immediately. You can delete documents there too. Scanned (image-only) PDFs have no text and are rejected.
+
 ### Step 6 - Use the UI
-Open http://localhost:8501 - tabs: Chat, Linux, Kubernetes, Storage, Docker, Commands, Log Analyzer, Calculator.
+Open http://localhost:3000 (React UI) - sidebar: AI Chat, Linux, Kubernetes, Storage, Docker, Command Generator, Log Analyzer, Storage Calculator.
+(The older Streamlit UI is still available: `docker compose --profile streamlit up -d`, then http://localhost:8501.)
 
 ### Step 7 - Try the API directly
 ```bash

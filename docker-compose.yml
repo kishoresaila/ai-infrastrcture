@@ -34,18 +34,25 @@ services:
       EMBED_MODEL: nomic-embed-text
       DOCS_DIR: /documents
     volumes:
-      - ./documents:/documents:ro
+      - ./documents:/documents
     depends_on: [ollama, qdrant]
     restart: unless-stopped
 
-  frontend:
-    build: ./frontend
+  frontend:                      # React UI (http://localhost:3000)
+    build: ./frontend-react
     container_name: infra-frontend
+    ports: ["3000:80"]
+    depends_on: [backend]
+    restart: unless-stopped
+
+  frontend-streamlit:            # old Streamlit UI, optional: docker compose --profile streamlit up -d
+    profiles: ["streamlit"]
+    build: ./frontend
+    container_name: infra-streamlit
     ports: ["8501:8501"]
     environment:
       API_URL: http://backend:8000
     depends_on: [backend]
-    restart: unless-stopped
 
 volumes:
   ollama_data:

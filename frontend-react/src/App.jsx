@@ -3,6 +3,7 @@ import { RefreshCw } from "lucide-react";
 import Sidebar from "./components/Sidebar.jsx";
 import Chat from "./components/Chat.jsx";
 import Calculator from "./components/Calculator.jsx";
+import Documents from "./components/Documents.jsx";
 import { MODES } from "./modes.js";
 import { getHealth, ingest, streamAsk } from "./api.js";
 
@@ -68,11 +69,16 @@ export default function App() {
     }
   };
 
+  const showToast = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(""), 4000);
+  };
+
   const reindex = async () => {
     setIndexing(true);
     try {
       const r = await ingest();
-      setToast(`Indexed ${r.files} files · ${r.chunks} chunks`);
+      setToast(`Indexed ${r.files} files · ${r.chunks} chunks` + (r.errors?.length ? ` · ${r.errors.length} failed` : ""));
     } catch {
       setToast("Indexing failed. Is Ollama running with nomic-embed-text?");
     } finally {
@@ -102,8 +108,10 @@ export default function App() {
           </div>
         </header>
 
-        {mode.custom ? (
+        {mode.id === "calculator" ? (
           <Calculator />
+        ) : mode.id === "documents" ? (
+          <Documents onToast={showToast} />
         ) : (
           <Chat
             key={mode.id}

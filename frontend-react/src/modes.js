@@ -1,6 +1,6 @@
 import {
   MessageSquare, Terminal, Boxes, HardDrive, Container,
-  Wand2, FileSearch, Calculator as CalcIcon,
+  Wand2, FileSearch, Calculator as CalcIcon, Upload,
 } from "lucide-react";
 
 export const MODES = [
@@ -58,6 +58,12 @@ export const MODES = [
     id: "calculator", group: "Tools", label: "Storage Calculator", icon: CalcIcon,
     title: "Storage Calculator",
     desc: "Exact RAID sizing in code, not AI guesswork.",
+    custom: true,
+  },
+  {
+    id: "documents", group: "Knowledge", label: "Documents", icon: Upload,
+    title: "Knowledge Base",
+    desc: "Upload your own notes, runbooks and manuals so answers come from them.",
     custom: true,
   },
 ];
